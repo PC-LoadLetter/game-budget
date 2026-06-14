@@ -3,11 +3,12 @@ from pathlib import Path
 
 import pytest
 
+from game_budget.config import JOURNAL_FILENAME
 from game_budget.ledger.balances import savings_display, wallet_display
 from game_budget.ledger.periodic import DailyAllowanceLine, DailyBlock, parse_daily_block, replace_daily_block
 
 
-SAMPLE = Path(__file__).resolve().parents[1] / "samples" / "boys.dat"
+SAMPLE = Path(__file__).resolve().parents[1] / "samples" / JOURNAL_FILENAME
 
 
 @pytest.mark.skipif(not Path("/usr/bin/ledger").exists() and not Path("/run/current-system/sw/bin/ledger").exists(),

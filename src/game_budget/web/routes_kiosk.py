@@ -7,7 +7,7 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from game_budget.auth import generate_csrf_token, validate_csrf_token
-from game_budget.config import load_config
+from game_budget.config import journal_path, load_config
 from game_budget.ledger.transactions import TransactionRequest, parse_cost, post_transaction
 from game_budget.service import kiosk_balances, maybe_run_savings_cron, validate_sufficient_funds
 
@@ -102,7 +102,7 @@ async def kiosk_post(
             cost=parse_cost(cost),
         )
         validate_sufficient_funds(data, config, req)
-        post_transaction(data / "boys.dat", req)
+        post_transaction(journal_path(data), req)
         maybe_run_savings_cron(data, config)
         return RedirectResponse("/", status_code=303)
     except ValueError as exc:

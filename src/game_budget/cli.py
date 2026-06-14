@@ -5,7 +5,7 @@ from pathlib import Path
 
 import uvicorn
 
-from game_budget.config import data_dir
+from game_budget.config import JOURNAL_FILENAME, data_dir
 from game_budget.main import create_app
 from game_budget.service import init_data
 
@@ -24,7 +24,7 @@ def main() -> None:
     init_cmd.add_argument(
         "--sample",
         type=Path,
-        default=Path("samples/boys.dat"),
+        default=Path("samples") / JOURNAL_FILENAME,
         help="Sample journal to copy if none exists",
     )
 

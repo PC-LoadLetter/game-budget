@@ -1,12 +1,12 @@
 # Application overview
 
-Game Budget is a self-hosted web app for managing children's game spending allowances on a home LAN. Parents configure daily budgets and optional savings rules; children (or anyone on the network) use a shared kiosk page to log purchases. All accounting lives in a plain-text **ledger-cli** journal file (`boys.dat`), compatible with the original Flask app and editable outside the web UI.
+Game Budget is a self-hosted web app for managing children's game spending allowances on a home LAN. Parents configure daily budgets and optional savings rules; children (or anyone on the network) use a shared kiosk page to log purchases. All accounting lives in a plain-text **ledger-cli** journal file (`journal.dat`), compatible with the original Flask app ledger format and editable outside the web UI.
 
 ## Who it is for
 
 - **Households** that want a simple, phone-friendly way to track game purchases against a daily allowance.
 - **Parents** who need a password-protected settings page for budgets, import/export, and configuration.
-- **Operators** who already use ledger-cli and want to keep `boys.dat` as the source of truth — no database, no proprietary format.
+- **Operators** who already use ledger-cli and want a plain-text journal as the source of truth — no database, no proprietary format.
 
 The app assumes a **trusted home network**: the kiosk has no login; only `/admin` requires a password.
 
@@ -30,7 +30,7 @@ flowchart LR
   LedgerCLI --> Data
 ```
 
-1. **Daily allowance** — A `~ Daily` periodic block at the top of `boys.dat` accrues each child's budget. Ledger-cli expands this automatically when computing balances.
+1. **Daily allowance** — A `~ Daily` periodic block at the top of `journal.dat` accrues each child's budget. Ledger-cli expands this automatically when computing balances.
 2. **Purchases** — The kiosk form appends transactions to the journal (Steam, Epic, savings transfers, hardware, etc.).
 3. **Balances** — The app shells out to `ledger balance` and flips signs for display (wallet balances show as positive dollars).
 4. **Savings cron** — If configured, once per day the app appends a `cron` transaction moving money from the child's wallet into savings.
@@ -60,12 +60,12 @@ Password-protected (bcrypt hash in `config.yaml`). Default password on first run
 
 | Feature | Description |
 |---------|-------------|
-| Daily budgets | Updates `config.yaml` and rewrites the `~ Daily` block in `boys.dat` |
+| Daily budgets | Updates `config.yaml` and rewrites the `~ Daily` block in `journal.dat` |
 | Savings cron | Dollars per day swept into `{Child}:Savings` (0 = disabled) |
 | Background image | URL path served from `/static` (default: `/static/chiefjoe.jpg`) |
 | Allow overdraft | Skip balance checks on kiosk purchases |
-| Export | Download `boys.dat` |
-| Import | Replace journal (backs up current file to `boys.dat.bak`) |
+| Export | Download `journal.dat` |
+| Import | Replace journal from any uploaded file (backs up current file to `journal.dat.bak`) |
 
 ## Data files
 
@@ -73,10 +73,10 @@ All runtime state lives under the data directory (default `./data`, or `GAME_BUD
 
 | File | Purpose |
 |------|---------|
-| `boys.dat` | Ledger journal — source of truth for all money movement |
+| `journal.dat` | Ledger journal — source of truth for all money movement |
 | `config.yaml` | Child names, colors, daily budgets, savings cron, admin password hash, secret key |
-| `boys.dat.bak` | Created automatically before an import |
-| `boys.dat.lock` | File lock during journal writes |
+| `journal.dat.bak` | Created automatically before an import |
+| `journal.dat.lock` | File lock during journal writes |
 
 Back up the entire data directory before upgrades or imports.
 
@@ -102,7 +102,7 @@ On first run, children are inferred from the `~ Daily` block if `config.yaml` ha
 
 ## Ledger design
 
-The app uses the existing **boys.dat** ledger dialect natively. There is no schema migration or import adapter — export is a straight file copy.
+The app uses the **ledger-cli journal format** natively. There is no schema migration — export is a straight file copy. Import accepts a ledger file under any filename.
 
 ### Daily allowance (`~ Daily`)
 
@@ -216,7 +216,7 @@ The Docker image bundles Python and ledger-cli. No host install of ledger is req
 
 ```bash
 mkdir -p data
-cp /path/to/boys.dat data/boys.dat   # optional
+cp /path/to/your/journal.dat data/journal.dat   # optional; or import via /admin
 docker compose up --build
 ```
 
@@ -268,7 +268,7 @@ Environment variable `GAME_BUDGET_DATA` sets the data directory when `--data` is
 uv run pytest
 ```
 
-`tests/test_boys_compat.py` asserts wallet and savings balances against `samples/boys.dat` match ledger-cli output, and verifies `~ Daily` parse/rewrite. The balance test is skipped if `ledger` is not installed.
+`tests/test_journal_compat.py` asserts wallet and savings balances against `samples/journal.dat` match ledger-cli output, and verifies `~ Daily` parse/rewrite. The balance test is skipped if `ledger` is not installed.
 
 ## License
 

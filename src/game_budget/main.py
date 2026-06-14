@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from game_budget.config import data_dir, ensure_config, load_config
+from game_budget.config import JOURNAL_FILENAME, data_dir, ensure_config, load_config
 from game_budget.service import init_data, maybe_run_savings_cron
 from game_budget.web.routes_admin import router as admin_router
 from game_budget.web.routes_kiosk import router as kiosk_router
@@ -18,7 +18,7 @@ STATIC_DIR = PACKAGE_DIR / "web" / "static"
 
 def create_app(data: Path | None = None) -> FastAPI:
     data_path = data_dir(data)
-    sample = Path(__file__).resolve().parents[2] / "samples" / "boys.dat"
+    sample = Path(__file__).resolve().parents[2] / "samples" / JOURNAL_FILENAME
     init_data(data_path, sample_journal=sample if sample.exists() else None)
     config = ensure_config(data_path)
     maybe_run_savings_cron(data_path, config)

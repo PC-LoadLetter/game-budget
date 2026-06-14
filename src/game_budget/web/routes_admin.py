@@ -13,6 +13,7 @@ from game_budget.auth import (
     validate_csrf_token,
 )
 from game_budget.config import (
+    JOURNAL_FILENAME,
     ChildConfig,
     ensure_config,
     journal_path,
@@ -124,7 +125,7 @@ async def admin_export(request: Request):
     if not _require_admin(request):
         return RedirectResponse("/admin", status_code=303)
     journal = journal_path(request.app.state.data_dir)
-    return FileResponse(journal, filename="boys.dat", media_type="text/plain")
+    return FileResponse(journal, filename=JOURNAL_FILENAME, media_type="text/plain")
 
 
 @router.post("/import")

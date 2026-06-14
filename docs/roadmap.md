@@ -21,7 +21,7 @@ For how the app works today, see [Application overview](application.md).
 - [x] Roadmap in `docs/`
 - [x] Expand README with links to docs and backup/upgrade notes
 - [ ] Document HTTPS reverse-proxy setup (Caddy/nginx sketch)
-- [ ] Smoke-test checklist for Docker + sample `boys.dat`
+- [ ] Smoke-test checklist for Docker + sample `journal.dat`
 
 ## Next — sharing and ops
 
@@ -57,7 +57,7 @@ These are intentional non-goals unless requirements change significantly:
 - Multi-household or cloud-hosted SaaS
 - Native mobile apps
 - Payment processor / real-money integration
-- Beancount or alternate accounting engines (incompatible with `boys.dat`)
+- Beancount or alternate accounting engines (incompatible with the ledger-cli journal format)
 - Pure-Python replacement for ledger-cli (periodic `~ Daily` expansion is non-trivial)
 - Child or parent PIN logins on the kiosk (LAN-trust model matches the legacy app)
 
@@ -66,7 +66,7 @@ These are intentional non-goals unless requirements change significantly:
 - [x] Kiosk shows wallet + savings balances matching ledger-cli for configured children
 - [x] Form submit appends correct journal entries (purchase, savings deposit, spend from savings, hardware)
 - [x] Admin can edit daily budgets (rewrites `~ Daily` block)
-- [x] Export downloads a valid `boys.dat`; import replaces with backup
+- [x] Export downloads `journal.dat`; import accepts any ledger file (backs up before replace)
 - [x] `docker compose up` serves the kiosk with ledger-cli inside the container
 - [ ] README and docs sufficient for another household to adopt without author hand-holding
 

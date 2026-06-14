@@ -48,8 +48,11 @@ def data_dir(path: Path | None = None) -> Path:
     return Path("data")
 
 
+JOURNAL_FILENAME = "journal.dat"
+
+
 def journal_path(data: Path) -> Path:
-    return data / "boys.dat"
+    return data / JOURNAL_FILENAME
 
 
 def config_path(data: Path) -> Path:

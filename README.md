@@ -2,7 +2,7 @@
 
 Self-hosted LAN game allowance kiosk. Parents set daily budgets; kids log purchases
 from phones or PCs on the home network. Accounting uses a plain-text **ledger-cli**
-journal (`boys.dat`) for full compatibility with the existing Flask app.
+journal (`journal.dat`) compatible with the original Flask app format.
 
 **Documentation:** [Application overview](docs/application.md) · [Roadmap](docs/roadmap.md)
 
@@ -10,7 +10,7 @@ journal (`boys.dat`) for full compatibility with the existing Flask app.
 
 ```bash
 mkdir -p data
-cp /path/to/your/boys.dat data/boys.dat   # or start fresh via init inside container
+cp /path/to/your/journal.dat data/journal.dat   # or import via /admin later
 docker compose up --build
 ```
 
@@ -24,7 +24,7 @@ Default admin password on first run: `admin` (change at `/admin`).
 nix develop   # optional: Python, ledger, uv, just
 uv sync --group dev
 uv run game-budget init --data ./data
-cp samples/boys.dat data/boys.dat         # optional test journal
+cp samples/journal.dat data/journal.dat         # optional test journal
 uv run game-budget serve --data ./data --host 0.0.0.0
 ```
 
@@ -32,10 +32,11 @@ uv run game-budget serve --data ./data --host 0.0.0.0
 
 | Path | Purpose |
 |------|---------|
-| `data/boys.dat` | Ledger journal (mount as Docker volume) |
+| `data/journal.dat` | Ledger journal (mount as Docker volume) |
 | `data/config.yaml` | Child colors, budgets, admin hash |
 
-Back up `./data` before upgrades.
+Back up `./data` before upgrades. To migrate an existing ledger file, rename it to
+`journal.dat` or use **Import ledger** on `/admin` (any filename accepted).
 
 ## License
 
