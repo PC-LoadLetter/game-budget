@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Game Budget</title>
+<style>
+body {
+  background-image: url('{{ background_image }}');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100%;
+  background-color: black;
+}
+.error { color: #ff6666; font-size: 24px; margin: 12px; }
+</style>
+</head>
+<body>
+<center>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+{% if left and right %}
+<table style="width:100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right" width="20%">
+      <h1 style="font-size: 75px;background-color: {{ left.color }};opacity: 0.75;">
+        <font color="black">{{ format_money(balances[left.name].wallet) }}</font>
+      </h1>
+    </td>
+    <td align="center" width="30%">
+      <h1 style="font-size: 75px;background-color: {{ left.color }};opacity: 0.75;">{{ left.name }}</h1>
+    </td>
+    <td align="center" width="30%">
+      <h1 style="font-size: 75px;background-color: {{ right.color }};opacity: 0.75;">{{ right.name }}</h1>
+    </td>
+    <td align="left" width="20%">
+      <h1 style="font-size: 75px;background-color: {{ right.color }};opacity: 0.75;">
+        <font color="black">{{ format_money(balances[right.name].wallet) }}</font>
+      </h1>
+    </td>
+  </tr>
+</table>
+<table style="width:100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right" width="20%">
+      <h1 style="font-size: 75px;background-color: {{ left.color }};opacity: 0.75;">
+        <font color="black">{{ format_money(balances[left.name].savings) }}</font>
+      </h1>
+    </td>
+    <td align="center" width="30%">
+      <h1 style="font-size: 75px;background-color: {{ left.color }};opacity: 0.75;">Savings</h1>
+    </td>
+    <td align="center" width="30%">
+      <h1 style="font-size: 75px;background-color: {{ right.color }};opacity: 0.75;">Savings</h1>
+    </td>
+    <td align="left" width="20%">
+      <h1 style="font-size: 75px;background-color: {{ right.color }};opacity: 0.75;">
+        <font color="black">{{ format_money(balances[right.name].savings) }}</font>
+      </h1>
+    </td>
+  </tr>
+</table>
+{% endif %}
+<br>
+<form method="POST" action="/">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <table style="background-color: antiquewhite;opacity:0.55" cellspacing="0" cellpadding="0">
+    <tr><td></td><td><input id="date" name="date" type="date" value="{{ today }}"></td></tr>
+    <tr><td></td><td>
+      <select id="seller" name="seller">
+        <option value="Steam">Steam</option>
+        <option value="Epic">Epic</option>
+        <option value="Other">Other</option>
+        <option value="Savings">Savings</option>
+      </select>
+    </td></tr>
+    <tr><td></td><td><input id="game" name="game" type="text"></td></tr>
+    <tr><td></td><td>
+      <select id="buyer" name="buyer">
+        {% for child in children %}
+        <option value="{{ child.name }}">{{ child.name }}</option>
+        <option value="{{ child.name }} Savings">{{ child.name }} Savings</option>
+        {% endfor %}
+        <option value="Hardware">Hardware</option>
+        <option value="Mom">Mom</option>
+        <option value="Dad">Dad</option>
+      </select>
+    </td></tr>
+    <tr><td><label for="cost">$</label></td><td><input id="cost" name="cost" type="text"></td></tr>
+    <tr><td></td><td><input type="submit" value="Submit"></td></tr>
+  </table>
+</form>
+<p><a href="/admin" style="color:white;">Admin</a></p>
+</center>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Admin</title></head>
+<body>
+<h1>Game Budget Admin</h1>
+<p><a href="/">Kiosk</a> | <a href="/admin/export">Export boys.dat</a></p>
+
+<form method="POST" action="/admin/settings">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <table border="1" cellpadding="6">
+    <tr><th>Child</th><th>Daily budget</th><th>Savings cron ($/day)</th></tr>
+    {% for child in config.children %}
+    <tr>
+      <td>{{ child.name }}</td>
+      <td><input name="daily_{{ child.name }}" value="{{ child.daily_budget }}" size="8"></td>
+      <td><input name="savings_{{ child.name }}" value="{{ child.savings_cron }}" size="8"></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p>
+    <label>Background image path
+      <input name="background_image" value="{{ config.background_image }}" size="40">
+    </label>
+  </p>
+  <p><label><input type="checkbox" name="allow_overdraft" {% if config.allow_overdraft %}checked{% endif %}> Allow overdraft</label></p>
+  <button type="submit">Save settings</button>
+</form>
+
+<h2>Change admin password</h2>
+<form method="POST" action="/admin/password">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <input type="password" name="new_password" placeholder="New password">
+  <button type="submit">Update password</button>
+</form>
+
+<h2>Import ledger</h2>
+<form method="POST" action="/admin/import" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <input type="file" name="journal_file" accept=".dat,.ledger,.txt">
+  <button type="submit">Import (backs up current file)</button>
+</form>
+</body>
+</html>

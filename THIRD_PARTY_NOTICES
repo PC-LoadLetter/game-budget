@@ -1,0 +1,13 @@
+Third-Party Notices
+===================
+
+ledger-cli
+----------
+This application uses ledger-cli for balance calculation and periodic transaction
+expansion. ledger-cli is Copyright (c) 2003-2025 John Wiegley and licensed under
+the BSD 3-Clause License.
+
+See: https://github.com/ledger/ledger/blob/main/LICENSE.md
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the above copyright notice and disclaimer are retained.

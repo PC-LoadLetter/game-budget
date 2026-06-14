@@ -1,0 +1,10 @@
+services:
+  game-budget:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      GAME_BUDGET_DATA: /data
+    restart: unless-stopped

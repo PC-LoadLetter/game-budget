@@ -1,0 +1,13 @@
+[Unit]
+Description=Game Budget web app (bare metal)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/game-budget
+Environment=GAME_BUDGET_DATA=/var/lib/game-budget
+ExecStart=/opt/game-budget/.venv/bin/game-budget serve --host 0.0.0.0 --port 8080 --data /var/lib/game-budget
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
