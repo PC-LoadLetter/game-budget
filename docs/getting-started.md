@@ -11,7 +11,7 @@ Step-by-step guide for a new household. No prior Game Budget or ledger-cli exper
 | A home computer or NAS | Linux, macOS, or Windows with [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
 | Docker Compose | Included with Docker Desktop; on Linux, install the `docker compose` plugin |
 | Port **8080** free | Or change the port mapping in `docker-compose.yml` |
-| LAN devices | Phones, tablets, or PCs on the same Wi‑Fi — only a browser is needed |
+| LAN devices | Phones, tablets, or PCs on the same Wi‑Fi - only a browser is needed |
 
 The app is designed for a **trusted home network**. The kiosk page has no login; anyone on your LAN can log purchases. Only `/admin` is password-protected.
 
@@ -65,7 +65,7 @@ If `up --build` is unsupported, run `podman compose build` then `podman compose 
 
 ---
 
-## Path A — Fresh household (no existing ledger)
+## Path A: Fresh household (no existing ledger)
 
 Use this when you are starting from zero.
 
@@ -95,7 +95,7 @@ Savings cron moves that amount from a gamer's wallet into savings once per day (
 The admin UI edits budgets but **cannot add or rename gamers in v1**. To use your own names:
 
 1. Stop the app: `docker compose down`
-2. Edit `data/journal.dat` — change the names in the `~ Daily` block at the top:
+2. Edit `data/journal.dat` - change the names in the `~ Daily` block at the top:
 
    ```
    ~ Daily
@@ -104,10 +104,10 @@ The admin UI edits budgets but **cannot add or rename gamers in v1**. To use you
        Assets
    ```
 
-3. Edit `data/config.yaml` — update the `gamers:` list to match (names and colors)
+3. Edit `data/config.yaml` - update the `gamers:` list to match (names and colors)
 4. Start again: `docker compose up -d`
 
-See [Application overview — account naming](application.md#account-naming) if you need ledger details.
+See [Application overview: account naming](application.md#account-naming) if you need ledger details.
 
 ### 5. First-run checklist
 
@@ -117,15 +117,15 @@ See [Application overview — account naming](application.md#account-naming) if 
 - [ ] Test purchase logged and balance updated
 - [ ] **Export journal** from admin works (backup sanity check)
 
-### 6. Optional — custom background
+### 6. Optional: custom background
 
-In admin, set **Background image path** to a URL served by the app, e.g. `/static/my-photo.jpg`, after placing your image in `src/game_budget/web/static/` and rebuilding the image — or mount a static files volume if you customize the deployment.
+In admin, set **Background image path** to a URL served by the app, e.g. `/static/my-photo.jpg`, after placing your image in `src/game_budget/web/static/` and rebuilding the image - or mount a static files volume if you customize the deployment.
 
 Default background is `/static/default-bg.svg` (included in the image).
 
 ---
 
-## Path B — Migrating an existing ledger
+## Path B: Migrating an existing ledger
 
 Use this if you already have a ledger-cli journal from the legacy Flask app or another install.
 
@@ -143,8 +143,8 @@ You do **not** need to copy the file into `data/` first.
 ### 2. Import
 
 1. Open `http://<host-ip>:8080/admin` and log in (`admin` / then change password)
-2. Under **Import ledger**, choose your file (any filename — `.dat`, `.ledger`, `.txt`)
-3. Click **Import** — the current journal is backed up to `journal.dat.bak`
+2. Under **Import ledger**, choose your file (any filename - `.dat`, `.ledger`, `.txt`)
+3. Click **Import:** the current journal is backed up to `journal.dat.bak`
 
 ### 3. Verify
 
@@ -169,7 +169,7 @@ docker compose up -d
 | Gamers / family | `/` | Check balances, log purchases |
 | Parents | `/admin` | Budgets, savings cron, import/export, settings |
 
-**Logging a purchase:** pick date, seller (Steam, Epic, etc.), game name, buyer, and cost. Submit — the page reloads with updated balances.
+**Logging a purchase:** pick date, seller (Steam, Epic, etc.), game name, buyer, and cost. Submit - the page reloads with updated balances.
 
 **Insufficient balance:** the purchase is rejected unless **Allow overdraft** is enabled in admin.
 
@@ -177,14 +177,14 @@ docker compose up -d
 
 ## Known limitations (v1)
 
-- **Two-gamer kiosk layout** — the balance dashboard is optimized for two gamers side by side. With one gamer, balances may not display above the form (you can still log purchases). See [roadmap](roadmap.md) for UI improvements.
-- **No admin UI to add/remove gamers** — edit `journal.dat` and `config.yaml` manually, or import a prepared journal.
-- **No HTTPS by default** — fine on a trusted LAN; see [Operations — HTTPS](operations.md#https-optional) if you want TLS.
+- **Two-gamer kiosk layout:** the balance dashboard is optimized for two gamers side by side. With one gamer, balances may not display above the form (you can still log purchases). See [roadmap](roadmap.md) for UI improvements.
+- **No admin UI to add/remove gamers:** edit `journal.dat` and `config.yaml` manually, or import a prepared journal.
+- **No HTTPS by default:** fine on a trusted LAN; see [Operations: HTTPS](operations.md#https-optional) if you want TLS.
 
 ---
 
 ## Next steps
 
-- [Operations](operations.md) — backup, upgrade, logs
-- [Troubleshooting](troubleshooting.md) — common problems
-- [Smoke test](smoke-test.md) — verify a install end-to-end
+- [Operations](operations.md) - backup, upgrade, logs
+- [Troubleshooting](troubleshooting.md) - common problems
+- [Smoke test](smoke-test.md) - verify a install end-to-end

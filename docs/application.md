@@ -6,7 +6,7 @@ Game Budget is a self-hosted web app for managing game spending allowances on a 
 
 - **Households** that want a simple, phone-friendly way to track game purchases against a daily allowance.
 - **Parents** who need a password-protected settings page for budgets, import/export, and configuration.
-- **Operators** who already use ledger-cli and want a plain-text journal as the source of truth — no database, no proprietary format.
+- **Operators** who already use ledger-cli and want a plain-text journal as the source of truth - no database, no proprietary format.
 
 The app assumes a **trusted home network**: the kiosk has no login; only `/admin` requires a password.
 
@@ -30,10 +30,10 @@ flowchart LR
   LedgerCLI --> Data
 ```
 
-1. **Daily allowance** — A `~ Daily` periodic block at the top of `journal.dat` accrues each gamer's budget. Ledger-cli expands this automatically when computing balances.
-2. **Purchases** — The kiosk form appends transactions to the journal (Steam, Epic, savings transfers, hardware, etc.).
-3. **Balances** — The app shells out to `ledger balance` and flips signs for display (wallet balances show as positive dollars).
-4. **Savings cron** — If configured, once per day the app appends a `cron` transaction moving money from the gamer's wallet into savings.
+1. **Daily allowance:** A `~ Daily` periodic block at the top of `journal.dat` accrues each gamer's budget. Ledger-cli expands this automatically when computing balances.
+2. **Purchases:** The kiosk form appends transactions to the journal (Steam, Epic, savings transfers, hardware, etc.).
+3. **Balances:** The app shells out to `ledger balance` and flips signs for display (wallet balances show as positive dollars).
+4. **Savings cron:** If configured, once per day the app appends a `cron` transaction moving money from the gamer's wallet into savings.
 
 ## Web pages
 
@@ -41,7 +41,7 @@ flowchart LR
 
 Shared dashboard with no login. Layout matches the legacy Flask UI:
 
-- Two columns (defaults to first two gamers in config) showing **wallet** and **savings** balances. Negative amounts render in red (legacy behavior). The side-by-side layout requires **two gamers**; with one gamer, the form still works but balances may not display prominently (see [Getting started — limitations](getting-started.md#known-limitations-v1)).
+- Two columns (defaults to first two gamers in config) showing **wallet** and **savings** balances. Negative amounts render in red (legacy behavior). The side-by-side layout requires **two gamers**; with one gamer, the form still works but balances may not display prominently (see [Getting started: limitations](getting-started.md#known-limitations-v1)).
 - Transaction form: date, seller, game description, buyer, cost.
 - **Activity feed** below the form: break-even projections when a wallet is overdrawn, plus a rolling **14-day** purchase register (newest first). Game names in the register omit the `:Gaming` suffix. Shows a short empty-state line when nothing posted in the window.
 - Background image from admin settings, overridable per session via `?image_file=/static/your-bg.jpg` (persisted across form submits).
@@ -58,7 +58,7 @@ Insufficient balance is rejected unless **allow overdraft** is enabled in admin 
 
 ### Admin (`/admin`)
 
-Password-protected (bcrypt hash in `config.yaml`). Default password on first run: `admin` — change it immediately.
+Password-protected (bcrypt hash in `config.yaml`). Default password on first run: `admin` - change it immediately.
 
 | Feature | Description |
 |---------|-------------|
@@ -75,7 +75,7 @@ All runtime state lives under the data directory (default `./data`, or `GAME_BUD
 
 | File | Purpose |
 |------|---------|
-| `journal.dat` | Ledger journal — source of truth for all money movement |
+| `journal.dat` | Ledger journal - source of truth for all money movement |
 | `config.yaml` | Gamer names, colors, daily budgets, savings cron, admin password hash, secret key |
 | `journal.dat.bak` | Created automatically before an import |
 | `journal.dat.lock` | File lock during journal writes |
@@ -104,7 +104,7 @@ On first run, gamers are inferred from the `~ Daily` block if `config.yaml` has 
 
 ## Ledger design
 
-The app uses the **ledger-cli journal format** natively. There is no schema migration — export is a straight file copy. Import accepts a ledger file under any filename.
+The app uses the **ledger-cli journal format** natively. There is no schema migration - export is a straight file copy. Import accepts a ledger file under any filename.
 
 ### Daily allowance (`~ Daily`)
 
@@ -164,7 +164,7 @@ Ledger-cli treats this as a periodic transaction. When a parent changes a daily 
 
 ### Balance display
 
-**Wallet** uses the same budget query as the legacy Flask kiosk — remaining allowance, not the full asset account:
+**Wallet** uses the same budget query as the legacy Flask kiosk - remaining allowance, not the full asset account:
 
 ```text
 ledger -E -f journal.dat --budget bal --invert
@@ -186,8 +186,8 @@ Break-even lines use each gamer's configured `daily_budget` when their budget wa
 
 ### Write path
 
-- **Append** — Purchases and cron entries are appended at EOF under a file lock.
-- **Rewrite** — Only the `~ Daily` header when budgets change.
+- **Append:** Purchases and cron entries are appended at EOF under a file lock.
+- **Rewrite:** Only the `~ Daily` header when budgets change.
 - **Never** shell out to ledger for writes.
 
 Historical entries (chores, `Gugga:Bucks`, equity adjustments) are preserved in the journal but have no dedicated kiosk UI in v1.
@@ -247,7 +247,7 @@ uv run game-budget init --data ./data
 uv run game-budget serve --data ./data --host 0.0.0.0
 ```
 
-An example systemd unit is in `deploy/game-budget.service`. See [Operations — bare metal](operations.md#bare-metal).
+An example systemd unit is in `deploy/game-budget.service`. See [Operations: bare metal](operations.md#bare-metal).
 
 ### Development
 
@@ -261,10 +261,10 @@ just test
 
 Proportionate for a home LAN app:
 
-- Kiosk `/` — no authentication; CSRF on POST only.
-- `/admin` — bcrypt password, `HttpOnly` session cookie, `SameSite=Lax`.
-- Journal writes — exclusive file lock to avoid concurrent corruption.
-- HTTPS — not required for v1; see [Operations — HTTPS](operations.md#https-optional).
+- Kiosk `/` - no authentication; CSRF on POST only.
+- `/admin` - bcrypt password, `HttpOnly` session cookie, `SameSite=Lax`.
+- Journal writes - exclusive file lock to avoid concurrent corruption.
+- HTTPS - not required for v1; see [Operations: HTTPS](operations.md#https-optional).
 
 Restrict filesystem permissions on the data directory to the service user.
 
@@ -287,4 +287,4 @@ uv run pytest
 
 ## License
 
-The application is MIT — see [LICENSE](../LICENSE). ledger-cli is BSD 3-Clause — see [THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES).
+The application is MIT - see [LICENSE](../LICENSE). ledger-cli is BSD 3-Clause - see [THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES).

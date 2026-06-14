@@ -4,12 +4,12 @@ A self-hosted allowance kiosk for game spending at home. Gamers check their bala
 Steam, Epic, and other purchases from any browser on the LAN; parents set daily budgets
 and optional savings rules on a separate admin page.
 
-![Game Budget kiosk — wallet and savings balances, purchase form, and recent activity](docs/images/kiosk.png)
+![Game Budget kiosk: wallet and savings balances, purchase form, and recent activity](docs/images/kiosk.png)
 
 ## Why use it
 
 **Teach money management.** A daily allowance that accrues in real time turns abstract
-limits into something gamers can see and reason about — how much they have, what a purchase
+limits into something gamers can see and reason about - how much they have, what a purchase
 costs, and what they have left.
 
 **Add structure to in-game spending.** Instead of negotiating every sale ad hoc, the
@@ -21,7 +21,7 @@ PC. They build the habit of checking balance before buying and recording what th
 without handing over your payment password for every checkout.
 
 Game Budget runs on your network. Your data stays in a plain-text journal on your machine
-— no cloud account, no subscription.
+- no cloud account, no subscription.
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ Game Budget runs on your network. Your data stays in a plain-text journal on you
 - Port **8080** available on the host
 - Devices on the same home Wi‑Fi / LAN
 
-No app install on gamers' devices — only a web browser.
+No app install on gamers' devices - only a web browser.
 
 ## Quick start
 
@@ -80,4 +80,4 @@ just test
 
 ## License
 
-MIT — see [LICENSE](LICENSE). ledger-cli is BSD 3-Clause — see [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).
+MIT - see [LICENSE](LICENSE). ledger-cli is BSD 3-Clause - see [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).

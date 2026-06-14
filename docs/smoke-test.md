@@ -6,7 +6,7 @@ Run this after install or before sharing the project with another household. Req
 
 ```bash
 cd game-budget
-rm -rf data          # only on a throwaway test — skips if you have live data
+rm -rf data          # only on a throwaway test - skips if you have live data
 mkdir -p data
 cp samples/fixture.dat data/journal.dat
 docker compose up --build -d

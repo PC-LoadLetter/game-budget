@@ -20,7 +20,7 @@ tar czf "game-budget-backup-$(date +%Y%m%d).tar.gz" data/
 docker compose up -d
 ```
 
-Stopping the container avoids copying the journal mid-write. For a quick live backup, use **Export journal** on `/admin` — that downloads `journal.dat` while the app runs.
+Stopping the container avoids copying the journal mid-write. For a quick live backup, use **Export journal** on `/admin` - that downloads `journal.dat` while the app runs.
 
 Keep backups off the same disk when possible (cloud drive, another machine).
 
@@ -28,7 +28,7 @@ Keep backups off the same disk when possible (cloud drive, another machine).
 
 ```bash
 docker compose down
-rm -rf data    # caution — destructive
+rm -rf data    # caution - destructive
 tar xzf game-budget-backup-YYYYMMDD.tar.gz
 docker compose up -d
 ```
