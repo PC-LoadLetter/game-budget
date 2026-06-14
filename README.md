@@ -4,6 +4,8 @@ A self-hosted allowance kiosk for game spending at home. Gamers check their bala
 Steam, Epic, and other purchases from any browser on the LAN; parents set daily budgets
 and optional savings rules on a separate admin page.
 
+![Game Budget kiosk — wallet and savings balances, purchase form, and recent activity](docs/images/kiosk.png)
+
 ## Why use it
 
 **Teach money management.** A daily allowance that accrues in real time turns abstract
