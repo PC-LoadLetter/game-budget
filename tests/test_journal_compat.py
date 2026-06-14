@@ -3,12 +3,11 @@ from pathlib import Path
 
 import pytest
 
-from game_budget.config import JOURNAL_FILENAME
+from game_budget.config import FIXTURE_JOURNAL_FILENAME
 from game_budget.ledger.balances import savings_display, wallet_display
 from game_budget.ledger.periodic import DailyAllowanceLine, DailyBlock, parse_daily_block, replace_daily_block
 
-
-SAMPLE = Path(__file__).resolve().parents[1] / "samples" / JOURNAL_FILENAME
+SAMPLE = Path(__file__).resolve().parents[1] / "samples" / FIXTURE_JOURNAL_FILENAME
 
 
 @pytest.mark.skipif(not Path("/usr/bin/ledger").exists() and not Path("/run/current-system/sw/bin/ledger").exists(),
@@ -16,10 +15,10 @@ SAMPLE = Path(__file__).resolve().parents[1] / "samples" / JOURNAL_FILENAME
 def test_balances_match_sample():
     if not SAMPLE.exists():
         pytest.skip("sample journal missing")
-    assert wallet_display(SAMPLE, "Falafel") == Decimal("138.10")
-    assert wallet_display(SAMPLE, "Cleanrig") == Decimal("2106.65")
-    assert savings_display(SAMPLE, "Falafel") == Decimal("72.88")
-    assert savings_display(SAMPLE, "Cleanrig") == Decimal("-0.10")
+    assert wallet_display(SAMPLE, "Alpha") == Decimal("15.50")
+    assert wallet_display(SAMPLE, "Beta") == Decimal("15.00")
+    assert savings_display(SAMPLE, "Alpha") == Decimal("-3.00")
+    assert savings_display(SAMPLE, "Beta") == Decimal("2.00")
 
 
 def test_parse_daily_block():

@@ -11,7 +11,7 @@ run:
     uv run game-budget serve --data ./data --host 0.0.0.0 --port 8080
 
 init:
-    uv run game-budget init --data ./data --sample samples/journal.dat
+    uv run game-budget init --data ./data --sample samples/fixture.dat
 
 docker-build:
     docker compose build

@@ -8,7 +8,7 @@ Run this after install or before sharing the project with another household. Req
 cd game-budget
 rm -rf data          # only on a throwaway test — skips if you have live data
 mkdir -p data
-cp samples/journal.dat data/journal.dat
+cp samples/fixture.dat data/journal.dat
 docker compose up --build -d
 ```
 
@@ -21,8 +21,8 @@ Wait until `docker compose ps` shows the service running.
 | 1 | Open `http://localhost:8080` | Kiosk loads; wallet and savings balances visible for two gamers |
 | 2 | Open `/admin`, login `admin` | Admin settings page loads |
 | 3 | Change admin password | Can log in with new password |
-| 4 | Set Falafel daily budget to `7.00`, save | Redirects to admin; `~ Daily` in `data/journal.dat` shows `$7.00` for Falafel |
-| 5 | Kiosk: log Steam purchase for Falafel, $1.00 | Redirects to `/`; Falafel wallet decreases by $1.00 |
+| 4 | Set Beta daily budget to `7.00`, save | Redirects to admin; `~ Daily` in `data/journal.dat` shows `$7.00` for Beta |
+| 5 | Kiosk: log Steam purchase for Alpha, $1.00 | Redirects to `/`; Alpha wallet decreases by $1.00 |
 | 6 | Admin → Export journal | Downloads `journal.dat` |
 | 7 | `docker compose exec game-budget ledger -E -f /data/journal.dat --budget bal --invert` | Gamer wallet on kiosk matches budget balance for that name |
 | 8 | `docker compose down` then `docker compose up -d` | Balances unchanged after restart |
@@ -32,7 +32,7 @@ Wait until `docker compose ps` shows the service running.
 
 | # | Step | Expected |
 |---|------|----------|
-| 10 | Admin → Import a copy of `samples/journal.dat` | Success; `journal.dat.bak` created |
+| 10 | Admin → Import a copy of `samples/fixture.dat` | Success; `journal.dat.bak` created |
 | 11 | Kiosk balances | Match pre-import values |
 
 ## Automated tests

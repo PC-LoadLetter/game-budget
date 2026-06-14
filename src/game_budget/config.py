@@ -49,6 +49,7 @@ def data_dir(path: Path | None = None) -> Path:
 
 
 JOURNAL_FILENAME = "journal.dat"
+FIXTURE_JOURNAL_FILENAME = "fixture.dat"
 
 
 def journal_path(data: Path) -> Path:

@@ -4,11 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from game_budget.config import JOURNAL_FILENAME
+from game_budget.config import FIXTURE_JOURNAL_FILENAME
 from game_budget.ledger.activity import break_even_report, kiosk_activity, register_report
 from game_budget.ledger.transactions import TransactionRequest, format_transaction, sanitize_game
 
-SAMPLE = Path(__file__).resolve().parents[1] / "samples" / JOURNAL_FILENAME
+SAMPLE = Path(__file__).resolve().parents[1] / "samples" / FIXTURE_JOURNAL_FILENAME
 
 
 def test_sanitize_game_strips_colons_and_apostrophes():
@@ -34,17 +34,17 @@ def test_register_report_strips_gaming_suffix():
         pytest.skip("sample journal missing")
     report = register_report(SAMPLE, days=730)
     assert ":Gaming" not in report
-    assert "Falafel" in report
+    assert "Alpha" in report
 
 
 @pytest.mark.skipif(not Path("/usr/bin/ledger").exists() and not Path("/run/current-system/sw/bin/ledger").exists(),
                     reason="ledger-cli not installed")
-def test_kiosk_activity_empty_window_message():
+def test_kiosk_activity_includes_recent_fixture_entries():
     if not SAMPLE.exists():
         pytest.skip("sample journal missing")
-    activity = kiosk_activity(SAMPLE, {"Falafel": Decimal("5"), "Cleanrig": Decimal("5")}, days=14)
-    if "breaks even" not in activity:
-        assert "No purchases in the last 14 days." in activity
+    activity = kiosk_activity(SAMPLE, {"Alpha": Decimal("5"), "Beta": Decimal("5")}, days=14)
+    assert "2026/06" in activity
+    assert "Alpha" in activity or "Beta" in activity
 
 
 @pytest.mark.skipif(not Path("/usr/bin/ledger").exists() and not Path("/run/current-system/sw/bin/ledger").exists(),
@@ -52,5 +52,5 @@ def test_kiosk_activity_empty_window_message():
 def test_break_even_report_is_string():
     if not SAMPLE.exists():
         pytest.skip("sample journal missing")
-    report = break_even_report(SAMPLE, {"Falafel": Decimal("4"), "Cleanrig": Decimal("5")})
+    report = break_even_report(SAMPLE, {"Alpha": Decimal("4"), "Beta": Decimal("5")})
     assert isinstance(report, str)

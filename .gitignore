@@ -4,6 +4,8 @@ __pycache__/
 uv.lock
 .pytest_cache/
 data/
+samples/journal.dat
+samples/boys.dat
 *.egg-info/
 dist/
 build/

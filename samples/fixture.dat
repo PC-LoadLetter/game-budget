@@ -1,0 +1,20 @@
+~ Daily
+	Alpha			$5.00
+	Beta			$5.00
+	Assets
+
+2026/06/10 Steam
+    Alpha:Gaming:example purchase    $12.50
+    Assets:Alpha
+
+2026/06/11 Epic
+    Beta:Gaming:another game         $8.00
+    Assets:Beta
+
+2026/06/12 cron
+    Beta:Savings                     $2.00
+    Expenses:Gaming:Saving
+
+2026/06/13 Savings
+    Alpha:Savings                    $-3.00
+    Assets:Alpha

@@ -283,7 +283,7 @@ Environment variable `GAME_BUDGET_DATA` sets the data directory when `--data` is
 uv run pytest
 ```
 
-`tests/test_journal_compat.py` asserts wallet and savings balances against `samples/journal.dat` match ledger-cli output, and verifies `~ Daily` parse/rewrite. The balance test is skipped if `ledger` is not installed.
+`tests/test_journal_compat.py` asserts wallet and savings balances against `samples/fixture.dat` match ledger-cli output, and verifies `~ Daily` parse/rewrite. The balance test is skipped if `ledger` is not installed.
 
 ## License
 
