@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Game Budget</title>
+<link rel="stylesheet" href="/static/kiosk.css">
 <style>
 body {
   background-image: url('{{ background_image }}');
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: 100%;
+  background-size: 100% auto;
+  background-position: center top;
   background-color: black;
 }
-.error { color: #ff6666; font-size: 24px; margin: 12px; }
 </style>
 </head>
 <body>
-<center>
+<div class="kiosk-page">
 {% if error %}<p class="error">{{ error }}</p>{% endif %}
 {% if left and right %}
+<div class="balances">
 <table style="width:100%" cellspacing="0" cellpadding="0">
   <tr>
     <td align="right" width="20%">
@@ -58,23 +61,37 @@ body {
     </td>
   </tr>
 </table>
+</div>
 {% endif %}
-<br>
-<form method="POST" action="/">
+
+<form class="purchase-form" method="POST" action="/">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-  <table style="background-color: antiquewhite;opacity:0.55" cellspacing="0" cellpadding="0">
-    <tr><td></td><td><input id="date" name="date" type="date" value="{{ today }}"></td></tr>
-    <tr><td></td><td>
-      <select id="seller" name="seller">
+  <div class="purchase-card">
+    <h2>Log purchase</h2>
+
+    <div class="field">
+      <label for="txn_date">Date</label>
+      <input id="txn_date" name="txn_date" type="date" value="{{ today }}" required>
+    </div>
+
+    <div class="field">
+      <label for="seller">Store</label>
+      <select id="seller" name="seller" required>
         <option value="Steam">Steam</option>
         <option value="Epic">Epic</option>
         <option value="Other">Other</option>
         <option value="Savings">Savings</option>
       </select>
-    </td></tr>
-    <tr><td></td><td><input id="game" name="game" type="text"></td></tr>
-    <tr><td></td><td>
-      <select id="buyer" name="buyer">
+    </div>
+
+    <div class="field">
+      <label for="game">Game or description</label>
+      <input id="game" name="game" type="text" placeholder="e.g. Hollow Knight" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label for="buyer">Buyer</label>
+      <select id="buyer" name="buyer" required>
         {% for child in children %}
         <option value="{{ child.name }}">{{ child.name }}</option>
         <option value="{{ child.name }} Savings">{{ child.name }} Savings</option>
@@ -83,12 +100,21 @@ body {
         <option value="Mom">Mom</option>
         <option value="Dad">Dad</option>
       </select>
-    </td></tr>
-    <tr><td><label for="cost">$</label></td><td><input id="cost" name="cost" type="text"></td></tr>
-    <tr><td></td><td><input type="submit" value="Submit"></td></tr>
-  </table>
+    </div>
+
+    <div class="field">
+      <label for="cost">Amount</label>
+      <div class="cost-input-wrap">
+        <span class="cost-prefix" aria-hidden="true">$</span>
+        <input id="cost" name="cost" type="text" inputmode="decimal" placeholder="0.00" required>
+      </div>
+    </div>
+
+    <button class="submit-btn" type="submit">Submit</button>
+  </div>
 </form>
-<p><a href="/admin" style="color:white;">Admin</a></p>
-</center>
+
+<p class="admin-link"><a href="/admin">Admin</a></p>
+</div>
 </body>
 </html>
