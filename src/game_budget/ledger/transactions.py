@@ -21,37 +21,41 @@ def _format_amount(amount: Decimal) -> str:
     return f"${amount:.2f}"
 
 
-def _child_from_buyer(buyer: str) -> str | None:
+def sanitize_game(raw: str) -> str:
+    return raw.strip().replace("'", "").replace(":", "")
+
+
+def _gamer_from_buyer(buyer: str) -> str | None:
     if buyer.endswith(" Savings"):
         return buyer[: -len(" Savings")]
-    if buyer in {"Falafel", "Cleanrig"}:
-        return buyer
-    return None
+    if buyer in {"Hardware", "Mom", "Dad"}:
+        return None
+    return buyer
 
 
 def format_transaction(req: TransactionRequest) -> str:
     date_str = req.txn_date.strftime("%Y/%m/%d")
-    game = req.game.strip()
+    game = sanitize_game(req.game)
     cost = req.cost
 
     if req.seller == "Savings":
-        child = _child_from_buyer(req.buyer)
-        if child is None:
+        gamer = _gamer_from_buyer(req.buyer)
+        if gamer is None:
             raise ValueError(f"Invalid buyer for savings deposit: {req.buyer}")
         return (
             f"{date_str} Savings\n"
-            f"    {child}:Savings                           {_format_amount(-cost)}\n"
-            f"    Assets:{child}\n"
+            f"    {gamer}:Savings                           {_format_amount(-cost)}\n"
+            f"    Assets:{gamer}\n"
         )
 
     if req.buyer.endswith(" Savings"):
-        child = req.buyer[: -len(" Savings")]
+        gamer = req.buyer[: -len(" Savings")]
         payee = "spend savings" if req.seller in {"Steam", "Epic", "Other"} else req.seller
         detail = game or req.seller
         return (
             f"{date_str} {payee}\n"
-            f"    {child}:Gaming:{detail}                     {_format_amount(cost)}\n"
-            f"    {child}:Savings\n"
+            f"    {gamer}:Gaming:{detail}                     {_format_amount(cost)}\n"
+            f"    {gamer}:Savings\n"
         )
 
     if req.buyer == "Hardware":
@@ -70,12 +74,12 @@ def format_transaction(req: TransactionRequest) -> str:
             f"    Assets:{req.buyer}\n"
         )
 
-    child = req.buyer
+    gamer = req.buyer
     detail = game or req.seller
     return (
         f"{date_str} {req.seller}\n"
-        f"        {child}:Gaming:{detail}    {_format_amount(cost)}\n"
-        f"        Assets:{child}\n"
+        f"        {gamer}:Gaming:{detail}    {_format_amount(cost)}\n"
+        f"        Assets:{gamer}\n"
     )
 
 

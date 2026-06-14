@@ -25,11 +25,11 @@ def init_data(data: Path, sample_journal: Path | None = None) -> None:
     ensure_config(data)
 
 
-def savings_cron_entry(child: str, amount: Decimal, txn_date: date | None = None) -> str:
+def savings_cron_entry(gamer: str, amount: Decimal, txn_date: date | None = None) -> str:
     d = (txn_date or date.today()).strftime("%Y/%m/%d")
     return (
         f"{d} cron\n"
-        f"    {child}:Savings                            ${amount:.2f}\n"
+        f"    {gamer}:Savings                            ${amount:.2f}\n"
         f"    Expenses:Gaming:Saving\n"
     )
 
@@ -40,22 +40,22 @@ def maybe_run_savings_cron(data: Path, config: AppConfig) -> None:
         return
     today = date.today().strftime("%Y/%m/%d")
     content = read_journal(journal)
-    for child in config.children:
-        if child.savings_cron <= 0:
+    for gamer in config.gamers:
+        if gamer.savings_cron <= 0:
             continue
-        marker = f"{today} cron\n    {child.name}:Savings"
+        marker = f"{today} cron\n    {gamer.name}:Savings"
         if marker in content:
             continue
-        append_journal(journal, savings_cron_entry(child.name, child.savings_cron))
+        append_journal(journal, savings_cron_entry(gamer.name, gamer.savings_cron))
 
 
 def kiosk_balances(data: Path, config: AppConfig) -> dict[str, dict[str, Decimal]]:
     journal = journal_path(data)
     result: dict[str, dict[str, Decimal]] = {}
-    for child in config.children:
-        result[child.name] = {
-            "wallet": wallet_display(journal, child.name),
-            "savings": savings_display(journal, child.name),
+    for gamer in config.gamers:
+        result[gamer.name] = {
+            "wallet": wallet_display(journal, gamer.name),
+            "savings": savings_display(journal, gamer.name),
         }
     return result
 
@@ -73,14 +73,14 @@ def validate_sufficient_funds(
     if req.seller == "Savings":
         if not req.buyer.endswith(" Savings"):
             raise ValueError("Invalid savings buyer")
-        child = req.buyer[: -len(" Savings")]
-        if balances[child]["wallet"] < req.cost:
+        gamer = req.buyer[: -len(" Savings")]
+        if balances[gamer]["wallet"] < req.cost:
             raise ValueError("Insufficient wallet balance for savings deposit")
         return
 
     if req.buyer.endswith(" Savings"):
-        child = req.buyer[: -len(" Savings")]
-        if balances[child]["savings"] < req.cost:
+        gamer = req.buyer[: -len(" Savings")]
+        if balances[gamer]["savings"] < req.cost:
             raise ValueError("Insufficient savings balance")
         return
 

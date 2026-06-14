@@ -9,7 +9,7 @@ All state lives in the data directory (default `./data` next to `docker-compose.
 | File | What it holds |
 |------|----------------|
 | `journal.dat` | Full transaction history and daily allowance |
-| `config.yaml` | Child settings, admin password hash, secrets |
+| `config.yaml` | Gamer settings, admin password hash, secrets |
 
 ### Recommended backup
 

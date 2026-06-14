@@ -14,7 +14,7 @@ from game_budget.auth import (
 )
 from game_budget.config import (
     JOURNAL_FILENAME,
-    ChildConfig,
+    GamerConfig,
     ensure_config,
     journal_path,
     save_config,
@@ -85,19 +85,19 @@ async def admin_settings(request: Request):
     if not validate_csrf_token(config, str(form.get("csrf_token", ""))):
         return RedirectResponse("/admin", status_code=303)
 
-    updated: list[ChildConfig] = []
-    for child in config.children:
-        daily = form.get(f"daily_{child.name}", child.daily_budget)
-        savings = form.get(f"savings_{child.name}", child.savings_cron)
+    updated: list[GamerConfig] = []
+    for gamer in config.gamers:
+        daily = form.get(f"daily_{gamer.name}", gamer.daily_budget)
+        savings = form.get(f"savings_{gamer.name}", gamer.savings_cron)
         updated.append(
-            ChildConfig(
-                name=child.name,
-                color=child.color,
+            GamerConfig(
+                name=gamer.name,
+                color=gamer.color,
                 daily_budget=Decimal(str(daily)),
                 savings_cron=Decimal(str(savings)),
             )
         )
-    config.children = updated
+    config.gamers = updated
     config.allow_overdraft = form.get("allow_overdraft") == "on"
     config.background_image = str(form.get("background_image", config.background_image))
     save_config(data, config)

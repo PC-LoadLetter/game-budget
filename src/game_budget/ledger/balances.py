@@ -72,9 +72,13 @@ def _budget_balance_map(journal: Path) -> dict[str, Decimal]:
     return balances
 
 
-def wallet_display(journal: Path, child: str) -> Decimal:
-    return _budget_balance_map(journal).get(child, Decimal("0"))
+def budget_balance_map(journal: Path) -> dict[str, Decimal]:
+    return _budget_balance_map(journal)
 
 
-def savings_display(journal: Path, child: str) -> Decimal:
-    return ledger_balance(journal, f"{child}:Savings")
+def wallet_display(journal: Path, gamer_name: str) -> Decimal:
+    return _budget_balance_map(journal).get(gamer_name, Decimal("0"))
+
+
+def savings_display(journal: Path, gamer_name: str) -> Decimal:
+    return ledger_balance(journal, f"{gamer_name}:Savings")

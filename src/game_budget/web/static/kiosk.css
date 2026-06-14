@@ -145,6 +145,19 @@ body {
   text-decoration: underline;
 }
 
+.activity-feed {
+  width: 100%;
+  max-width: 56rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  font-size: 1.875rem;
+  line-height: 1.35;
+  color: #fff;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: left;
+}
+
 @media (max-width: 600px) {
   .purchase-card {
     padding: 1rem 1.125rem 1.25rem;

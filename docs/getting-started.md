@@ -76,7 +76,7 @@ mkdir -p data
 docker compose up --build -d
 ```
 
-On first run the app creates a default `journal.dat` with two placeholder children and a $5/day allowance each. You will customize names and budgets next.
+On first run the app creates a default `journal.dat` with two placeholder gamers and a $5/day allowance each. You will customize names and budgets next.
 
 ### 2. Secure admin
 
@@ -86,13 +86,13 @@ On first run the app creates a default `journal.dat` with two placeholder childr
 
 ### 3. Set daily budgets
 
-On the admin page, set **Daily budget** and optional **Savings cron ($/day)** for each child, then click **Save settings**.
+On the admin page, set **Daily budget** and optional **Savings cron ($/day)** for each gamer, then click **Save settings**.
 
-Savings cron moves that amount from a child's wallet into savings once per day (when the app is running).
+Savings cron moves that amount from a gamer's wallet into savings once per day (when the app is running).
 
-### 4. Customize child names (if needed)
+### 4. Customize gamer names (if needed)
 
-The admin UI edits budgets but **cannot add or rename children in v1**. To use your own names:
+The admin UI edits budgets but **cannot add or rename gamers in v1**. To use your own names:
 
 1. Stop the app: `docker compose down`
 2. Edit `data/journal.dat` — change the names in the `~ Daily` block at the top:
@@ -104,7 +104,7 @@ The admin UI edits budgets but **cannot add or rename children in v1**. To use y
        Assets
    ```
 
-3. Edit `data/config.yaml` — update the `children:` list to match (names and colors)
+3. Edit `data/config.yaml` — update the `gamers:` list to match (names and colors)
 4. Start again: `docker compose up -d`
 
 See [Application overview — account naming](application.md#account-naming) if you need ledger details.
@@ -112,7 +112,7 @@ See [Application overview — account naming](application.md#account-naming) if 
 ### 5. First-run checklist
 
 - [ ] Admin password changed from `admin`
-- [ ] Daily budgets set for each child
+- [ ] Daily budgets set for each gamer
 - [ ] Kiosk URL bookmarked on family devices (`http://<host-ip>:8080`)
 - [ ] Test purchase logged and balance updated
 - [ ] **Export journal** from admin works (backup sanity check)
@@ -166,7 +166,7 @@ docker compose up -d
 
 | Who | URL | What they do |
 |-----|-----|----------------|
-| Kids / family | `/` | Check balances, log purchases |
+| Gamers / family | `/` | Check balances, log purchases |
 | Parents | `/admin` | Budgets, savings cron, import/export, settings |
 
 **Logging a purchase:** pick date, seller (Steam, Epic, etc.), game name, buyer, and cost. Submit — the page reloads with updated balances.
@@ -177,8 +177,8 @@ docker compose up -d
 
 ## Known limitations (v1)
 
-- **Two-child kiosk layout** — the balance dashboard is optimized for two children side by side. With one child, balances may not display above the form (you can still log purchases). See [roadmap](roadmap.md) for UI improvements.
-- **No admin UI to add/remove children** — edit `journal.dat` and `config.yaml` manually, or import a prepared journal.
+- **Two-gamer kiosk layout** — the balance dashboard is optimized for two gamers side by side. With one gamer, balances may not display above the form (you can still log purchases). See [roadmap](roadmap.md) for UI improvements.
+- **No admin UI to add/remove gamers** — edit `journal.dat` and `config.yaml` manually, or import a prepared journal.
 - **No HTTPS by default** — fine on a trusted LAN; see [Operations — HTTPS](operations.md#https-optional) if you want TLS.
 
 ---

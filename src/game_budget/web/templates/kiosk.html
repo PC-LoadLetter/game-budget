@@ -25,7 +25,7 @@ body {
   <tr>
     <td align="right" width="20%">
       <h1 style="font-size: 75px;background-color: {{ left.color }};opacity: 0.75;">
-        <font color="black">{{ format_money(balances[left.name].wallet) }}</font>
+        <font color="{% if balances[left.name].wallet < 0 %}red{% else %}black{% endif %}">{{ format_money(balances[left.name].wallet) }}</font>
       </h1>
     </td>
     <td align="center" width="30%">
@@ -36,7 +36,7 @@ body {
     </td>
     <td align="left" width="20%">
       <h1 style="font-size: 75px;background-color: {{ right.color }};opacity: 0.75;">
-        <font color="black">{{ format_money(balances[right.name].wallet) }}</font>
+        <font color="{% if balances[right.name].wallet < 0 %}red{% else %}black{% endif %}">{{ format_money(balances[right.name].wallet) }}</font>
       </h1>
     </td>
   </tr>
@@ -45,7 +45,7 @@ body {
   <tr>
     <td align="right" width="20%">
       <h1 style="font-size: 75px;background-color: {{ left.color }};opacity: 0.75;">
-        <font color="black">{{ format_money(balances[left.name].savings) }}</font>
+        <font color="{% if balances[left.name].savings < 0 %}red{% else %}black{% endif %}">{{ format_money(balances[left.name].savings) }}</font>
       </h1>
     </td>
     <td align="center" width="30%">
@@ -56,7 +56,7 @@ body {
     </td>
     <td align="left" width="20%">
       <h1 style="font-size: 75px;background-color: {{ right.color }};opacity: 0.75;">
-        <font color="black">{{ format_money(balances[right.name].savings) }}</font>
+        <font color="{% if balances[right.name].savings < 0 %}red{% else %}black{% endif %}">{{ format_money(balances[right.name].savings) }}</font>
       </h1>
     </td>
   </tr>
@@ -66,6 +66,7 @@ body {
 
 <form class="purchase-form" method="POST" action="/">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <input type="hidden" name="image_file" value="{{ image_file }}">
   <div class="purchase-card">
     <h2>Log purchase</h2>
 
@@ -92,9 +93,9 @@ body {
     <div class="field">
       <label for="buyer">Buyer</label>
       <select id="buyer" name="buyer" required>
-        {% for child in children %}
-        <option value="{{ child.name }}">{{ child.name }}</option>
-        <option value="{{ child.name }} Savings">{{ child.name }} Savings</option>
+        {% for gamer in gamers %}
+        <option value="{{ gamer.name }}">{{ gamer.name }}</option>
+        <option value="{{ gamer.name }} Savings">{{ gamer.name }} Savings</option>
         {% endfor %}
         <option value="Hardware">Hardware</option>
         <option value="Mom">Mom</option>
@@ -113,6 +114,8 @@ body {
     <button class="submit-btn" type="submit">Submit</button>
   </div>
 </form>
+
+<pre class="activity-feed">{{ activity }}</pre>
 
 <p class="admin-link"><a href="/admin">Admin</a></p>
 </div>

@@ -8,12 +8,12 @@
 <form method="POST" action="/admin/settings">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
   <table border="1" cellpadding="6">
-    <tr><th>Child</th><th>Daily budget</th><th>Savings cron ($/day)</th></tr>
-    {% for child in config.children %}
+    <tr><th>Gamer</th><th>Daily budget</th><th>Savings cron ($/day)</th></tr>
+    {% for gamer in config.gamers %}
     <tr>
-      <td>{{ child.name }}</td>
-      <td><input name="daily_{{ child.name }}" value="{{ child.daily_budget }}" size="8"></td>
-      <td><input name="savings_{{ child.name }}" value="{{ child.savings_cron }}" size="8"></td>
+      <td>{{ gamer.name }}</td>
+      <td><input name="daily_{{ gamer.name }}" value="{{ gamer.daily_budget }}" size="8"></td>
+      <td><input name="savings_{{ gamer.name }}" value="{{ gamer.savings_cron }}" size="8"></td>
     </tr>
     {% endfor %}
   </table>

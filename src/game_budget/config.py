@@ -13,7 +13,7 @@ from game_budget.ledger.periodic import DailyAllowanceLine, DailyBlock, replace_
 
 
 @dataclass
-class ChildConfig:
+class GamerConfig:
     name: str
     color: str = "darkgreen"
     daily_budget: Decimal = Decimal("5.00")
@@ -22,18 +22,18 @@ class ChildConfig:
 
 @dataclass
 class AppConfig:
-    children: list[ChildConfig] = field(default_factory=list)
+    gamers: list[GamerConfig] = field(default_factory=list)
     admin_password_hash: str = ""
     background_image: str = "/static/default-bg.svg"
     secret_key: str = ""
     allow_overdraft: bool = False
 
     @property
-    def child_names(self) -> list[str]:
-        return [c.name for c in self.children]
+    def gamer_names(self) -> list[str]:
+        return [g.name for g in self.gamers]
 
 
-DEFAULT_CHILD_COLORS = {
+DEFAULT_GAMER_COLORS = {
     "Cleanrig": "darkgreen",
     "Falafel": "#0606ba",
 }
@@ -59,22 +59,26 @@ def config_path(data: Path) -> Path:
     return data / "config.yaml"
 
 
+def _parse_gamer_items(raw: dict) -> list[GamerConfig]:
+    items = raw.get("gamers", raw.get("children", []))
+    return [
+        GamerConfig(
+            name=item["name"],
+            color=item.get("color", DEFAULT_GAMER_COLORS.get(item["name"], "darkgreen")),
+            daily_budget=Decimal(str(item.get("daily_budget", "5.00"))),
+            savings_cron=Decimal(str(item.get("savings_cron", "0"))),
+        )
+        for item in items
+    ]
+
+
 def load_config(data: Path) -> AppConfig:
     path = config_path(data)
     if not path.exists():
         return AppConfig()
     raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    children = [
-        ChildConfig(
-            name=item["name"],
-            color=item.get("color", DEFAULT_CHILD_COLORS.get(item["name"], "darkgreen")),
-            daily_budget=Decimal(str(item.get("daily_budget", "5.00"))),
-            savings_cron=Decimal(str(item.get("savings_cron", "0"))),
-        )
-        for item in raw.get("children", [])
-    ]
     return AppConfig(
-        children=children,
+        gamers=_parse_gamer_items(raw),
         admin_password_hash=raw.get("admin_password_hash", ""),
         background_image=raw.get("background_image", "/static/default-bg.svg"),
         secret_key=raw.get("secret_key", ""),
@@ -85,14 +89,14 @@ def load_config(data: Path) -> AppConfig:
 def save_config(data: Path, config: AppConfig) -> None:
     data.mkdir(parents=True, exist_ok=True)
     payload = {
-        "children": [
+        "gamers": [
             {
-                "name": child.name,
-                "color": child.color,
-                "daily_budget": float(child.daily_budget),
-                "savings_cron": float(child.savings_cron),
+                "name": gamer.name,
+                "color": gamer.color,
+                "daily_budget": float(gamer.daily_budget),
+                "savings_cron": float(gamer.savings_cron),
             }
-            for child in config.children
+            for gamer in config.gamers
         ],
         "admin_password_hash": config.admin_password_hash,
         "background_image": config.background_image,
@@ -109,8 +113,8 @@ def sync_daily_block(data: Path, config: AppConfig) -> None:
     block = DailyBlock(
         period="Daily",
         lines=tuple(
-            DailyAllowanceLine(account=child.name, amount=child.daily_budget)
-            for child in config.children
+            DailyAllowanceLine(account=gamer.name, amount=gamer.daily_budget)
+            for gamer in config.gamers
         ),
         balancing_account="Assets",
     )
@@ -118,7 +122,7 @@ def sync_daily_block(data: Path, config: AppConfig) -> None:
     write_journal(journal, replace_daily_block(content, block))
 
 
-def children_from_journal(data: Path) -> list[str]:
+def gamers_from_journal(data: Path) -> list[str]:
     journal = journal_path(data)
     if not journal.exists():
         return []
@@ -137,14 +141,14 @@ def ensure_config(data: Path) -> AppConfig:
 
         config.secret_key = secrets.token_hex(32)
 
-    if not config.children:
-        names = children_from_journal(data)
+    if not config.gamers:
+        names = gamers_from_journal(data)
         if not names:
             names = ["Cleanrig", "Falafel"]
-        config.children = [
-            ChildConfig(
+        config.gamers = [
+            GamerConfig(
                 name=name,
-                color=DEFAULT_CHILD_COLORS.get(name, "darkgreen"),
+                color=DEFAULT_GAMER_COLORS.get(name, "darkgreen"),
             )
             for name in names
         ]

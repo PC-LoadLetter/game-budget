@@ -1,6 +1,6 @@
 # Application overview
 
-Game Budget is a self-hosted web app for managing children's game spending allowances on a home LAN. Parents configure daily budgets and optional savings rules; children (or anyone on the network) use a shared kiosk page to log purchases. All accounting lives in a plain-text **ledger-cli** journal file (`journal.dat`), compatible with the original Flask app ledger format and editable outside the web UI.
+Game Budget is a self-hosted web app for managing game spending allowances on a home LAN. Parents configure daily budgets and optional savings rules for each **gamer**; anyone on the network can use the shared kiosk page to log purchases. All accounting lives in a plain-text **ledger-cli** journal file (`journal.dat`), compatible with the original Flask app ledger format and editable outside the web UI.
 
 ## Who it is for
 
@@ -30,10 +30,10 @@ flowchart LR
   LedgerCLI --> Data
 ```
 
-1. **Daily allowance** — A `~ Daily` periodic block at the top of `journal.dat` accrues each child's budget. Ledger-cli expands this automatically when computing balances.
+1. **Daily allowance** — A `~ Daily` periodic block at the top of `journal.dat` accrues each gamer's budget. Ledger-cli expands this automatically when computing balances.
 2. **Purchases** — The kiosk form appends transactions to the journal (Steam, Epic, savings transfers, hardware, etc.).
 3. **Balances** — The app shells out to `ledger balance` and flips signs for display (wallet balances show as positive dollars).
-4. **Savings cron** — If configured, once per day the app appends a `cron` transaction moving money from the child's wallet into savings.
+4. **Savings cron** — If configured, once per day the app appends a `cron` transaction moving money from the gamer's wallet into savings.
 
 ## Web pages
 
@@ -41,15 +41,17 @@ flowchart LR
 
 Shared dashboard with no login. Layout matches the legacy Flask UI:
 
-- Two columns (defaults to first two children in config) showing **wallet** and **savings** balances. The side-by-side layout requires **two children**; with one child, the form still works but balances may not display prominently (see [Getting started — limitations](getting-started.md#known-limitations-v1)).
+- Two columns (defaults to first two gamers in config) showing **wallet** and **savings** balances. Negative amounts render in red (legacy behavior). The side-by-side layout requires **two gamers**; with one gamer, the form still works but balances may not display prominently (see [Getting started — limitations](getting-started.md#known-limitations-v1)).
 - Transaction form: date, seller, game description, buyer, cost.
+- **Activity feed** below the form: break-even projections when a wallet is overdrawn, plus a rolling **14-day** purchase register (newest first). Game names in the register omit the `:Gaming` suffix. Shows a short empty-state line when nothing posted in the window.
+- Background image from admin settings, overridable per session via `?image_file=/static/your-bg.jpg` (persisted across form submits).
 - CSRF token on POST; full page reload after a successful submit.
 
 | Field | Options | Purpose |
 |-------|---------|---------|
 | `seller` | Steam, Epic, Other, Savings | Payee / transaction type |
-| `buyer` | Child name, `{Child} Savings`, Hardware, Mom, Dad | Which account is debited |
-| `game` | Free text | Expense account detail (`{Child}:Gaming:{game}`) |
+| `buyer` | Gamer name, `{Gamer} Savings`, Hardware, Mom, Dad | Which account is debited |
+| `game` | Free text | Expense account detail (`{Gamer}:Gaming:{game}`); `'` and `:` stripped before posting |
 | `cost` | Dollar amount | Must be positive |
 
 Insufficient balance is rejected unless **allow overdraft** is enabled in admin settings.
@@ -61,7 +63,7 @@ Password-protected (bcrypt hash in `config.yaml`). Default password on first run
 | Feature | Description |
 |---------|-------------|
 | Daily budgets | Updates `config.yaml` and rewrites the `~ Daily` block in `journal.dat` |
-| Savings cron | Dollars per day swept into `{Child}:Savings` (0 = disabled) |
+| Savings cron | Dollars per day swept into `{Gamer}:Savings` (0 = disabled) |
 | Background image | URL path served from `/static` (default: `/static/default-bg.svg`) |
 | Allow overdraft | Skip balance checks on kiosk purchases |
 | Export | Download `journal.dat` |
@@ -74,7 +76,7 @@ All runtime state lives under the data directory (default `./data`, or `GAME_BUD
 | File | Purpose |
 |------|---------|
 | `journal.dat` | Ledger journal — source of truth for all money movement |
-| `config.yaml` | Child names, colors, daily budgets, savings cron, admin password hash, secret key |
+| `config.yaml` | Gamer names, colors, daily budgets, savings cron, admin password hash, secret key |
 | `journal.dat.bak` | Created automatically before an import |
 | `journal.dat.lock` | File lock during journal writes |
 
@@ -83,7 +85,7 @@ Back up the entire data directory before upgrades or imports.
 ### `config.yaml` shape
 
 ```yaml
-children:
+gamers:
   - name: Cleanrig
     color: darkgreen
     daily_budget: 5.0
@@ -98,7 +100,7 @@ secret_key: "..."
 allow_overdraft: false
 ```
 
-On first run, children are inferred from the `~ Daily` block if `config.yaml` has none. Daily budgets in config are synced back into the journal header.
+On first run, gamers are inferred from the `~ Daily` block if `config.yaml` has none. Daily budgets in config are synced back into the journal header. Legacy configs using a top-level `children:` key are still read; saving from admin rewrites the file with `gamers:`.
 
 ## Ledger design
 
@@ -119,9 +121,9 @@ Ledger-cli treats this as a periodic transaction. When a parent changes a daily 
 
 | Role | Pattern | Example |
 |------|---------|---------|
-| Child wallet | `Assets:{Child}` | `Assets:Falafel` |
-| Game purchase | `{Child}:Gaming[:detail]` | `Falafel:Gaming:war thunder stuffs` |
-| Savings | `{Child}:Savings` | `Falafel:Savings` |
+| Gamer wallet | `Assets:{Gamer}` | `Assets:Falafel` |
+| Game purchase | `{Gamer}:Gaming[:detail]` | `Falafel:Gaming:war thunder stuffs` |
+| Savings | `{Gamer}:Savings` | `Falafel:Savings` |
 | Savings funding | `Expenses:Gaming:Saving` | Used by savings cron |
 | Hardware | `Assets:Hardware`, `Hardware:Gaming:...` | Shared hardware wallet |
 | Parents | `Mom:Gaming:*`, `Dad:Gaming:*` | Parent purchases |
@@ -152,7 +154,7 @@ Ledger-cli treats this as a periodic transaction. When a parent changes a daily 
     Falafel:Savings
 ```
 
-**Savings cron** (automatic, once per day per child when enabled):
+**Savings cron** (automatic, once per day per gamer when enabled):
 
 ```
 2026/06/14 cron
@@ -168,11 +170,19 @@ Ledger-cli treats this as a periodic transaction. When a parent changes a daily 
 ledger -E -f journal.dat --budget bal --invert
 ```
 
-The child name (e.g. `Falafel`) is looked up in that report. **Savings** uses the sub-account balance:
+The gamer name (e.g. `Falafel`) is looked up in that report. **Savings** uses the sub-account balance:
 
 ```text
 savings_display = ledger_balance("Falafel:Savings")
 ```
+
+**Activity feed** (legacy parity, improved window):
+
+```text
+ledger -f journal.dat -b "last 14 days" -S "-date" -E reg not Assets and not Mom and not Savings and not Saving
+```
+
+Break-even lines use each gamer's configured `daily_budget` when their budget wallet is negative.
 
 ### Write path
 

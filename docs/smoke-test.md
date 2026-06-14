@@ -18,13 +18,13 @@ Wait until `docker compose ps` shows the service running.
 
 | # | Step | Expected |
 |---|------|----------|
-| 1 | Open `http://localhost:8080` | Kiosk loads; wallet and savings balances visible for two children |
+| 1 | Open `http://localhost:8080` | Kiosk loads; wallet and savings balances visible for two gamers |
 | 2 | Open `/admin`, login `admin` | Admin settings page loads |
 | 3 | Change admin password | Can log in with new password |
 | 4 | Set Falafel daily budget to `7.00`, save | Redirects to admin; `~ Daily` in `data/journal.dat` shows `$7.00` for Falafel |
 | 5 | Kiosk: log Steam purchase for Falafel, $1.00 | Redirects to `/`; Falafel wallet decreases by $1.00 |
 | 6 | Admin → Export journal | Downloads `journal.dat` |
-| 7 | `docker compose exec game-budget ledger -f /data/journal.dat balance Assets:Falafel --flat` | Matches kiosk wallet display (ledger amount ≈ negative of displayed wallet) |
+| 7 | `docker compose exec game-budget ledger -E -f /data/journal.dat --budget bal --invert` | Gamer wallet on kiosk matches budget balance for that name |
 | 8 | `docker compose down` then `docker compose up -d` | Balances unchanged after restart |
 | 9 | `uv run pytest` (on host, from project root) | All tests pass |
 

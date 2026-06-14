@@ -46,13 +46,13 @@ Expected behavior — the selected buyer account does not have enough funds. Opt
 - Wait for daily allowance to accrue (ledger-cli expands the `~ Daily` block)
 - Enable **Allow overdraft** in admin (not recommended for everyday use)
 
-## Import did not change child names
+## Import did not change gamer names
 
-Import replaces `journal.dat` but `config.yaml` may still list old children. After import:
+Import replaces `journal.dat` but `config.yaml` may still list old gamers. After import:
 
 1. Check the `~ Daily` block at the top of `journal.dat`
 2. Restart the app or visit admin — `ensure_config` syncs from the journal
-3. If names are still wrong, edit `config.yaml` `children:` to match the journal and restart
+3. If names are still wrong, edit `config.yaml` `gamers:` to match the journal and restart (legacy `children:` is still read on load)
 
 ## Background image missing or broken
 
@@ -64,11 +64,11 @@ Import replaces `journal.dat` but `config.yaml` may still list old children. Aft
 
 - Hard-refresh the kiosk page (balances update on reload after submit).
 - Confirm the transaction appears at the end of `journal.dat`.
-- Run manually: `docker compose exec game-budget ledger -f /data/journal.dat balance Assets:ChildName --flat`
+- Run manually: `docker compose exec game-budget ledger -f /data/journal.dat balance Assets:GamerName --flat`
 
-## Single child — no balance banner
+## Single gamer — no balance banner
 
-The kiosk dashboard layout expects **two children** for the large balance row. With one child configured, the purchase form still works; balances may not display prominently. This is a known v1 limitation — see [roadmap](roadmap.md).
+The kiosk dashboard layout expects **two gamers** for the large balance row. With one gamer configured, the purchase form still works; balances may not display prominently. This is a known v1 limitation — see [roadmap](roadmap.md).
 
 ## Container exits immediately
 
