@@ -16,8 +16,8 @@ SAMPLE = Path(__file__).resolve().parents[1] / "samples" / JOURNAL_FILENAME
 def test_balances_match_sample():
     if not SAMPLE.exists():
         pytest.skip("sample journal missing")
-    assert wallet_display(SAMPLE, "Falafel") == Decimal("8445.85")
-    assert wallet_display(SAMPLE, "Cleanrig") == Decimal("7339.49")
+    assert wallet_display(SAMPLE, "Falafel") == Decimal("138.10")
+    assert wallet_display(SAMPLE, "Cleanrig") == Decimal("2106.65")
     assert savings_display(SAMPLE, "Falafel") == Decimal("72.88")
     assert savings_display(SAMPLE, "Cleanrig") == Decimal("-0.10")
 

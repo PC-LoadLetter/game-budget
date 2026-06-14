@@ -42,6 +42,27 @@ Open the kiosk from another device: `http://<that-ip>:8080`
 
 If the page does not load, see [Troubleshooting](troubleshooting.md#cannot-reach-the-kiosk-from-a-phone-or-tablet).
 
+### Podman (without Docker Compose)
+
+If `docker` is Podman emulation and `docker compose up --build` fails, build and run directly:
+
+```bash
+git pull   # ensure pyproject.toml includes web asset packaging
+mkdir -p data
+podman build --no-cache -t game-budget .
+podman run -d \
+  --name game-budget \
+  -p 8080:8080 \
+  -v ./data:/data:Z \
+  -e GAME_BUDGET_DATA=/data \
+  --replace \
+  game-budget
+```
+
+Use `--no-cache` when upgrading after a packaging fix; otherwise Podman may reuse an old `pip install` layer without `web/static`. The Dockerfile verifies those directories exist at build time.
+
+If `up --build` is unsupported, run `podman compose build` then `podman compose up -d` instead.
+
 ---
 
 ## Path A — Fresh household (no existing ledger)

@@ -1,5 +1,19 @@
 # Troubleshooting
 
+## Container exits immediately (Podman / Docker)
+
+```bash
+podman ps -a
+podman logs game-budget
+```
+
+| Log message | Fix |
+|-------------|-----|
+| `Directory '.../web/static' does not exist` | Pull latest code, then `podman build --no-cache -t game-budget .` (stale build cache skipped packaging web assets) |
+| Image not found | Run `podman build -t game-budget .` first |
+
+The image build should pass a check that `web/static` and `web/templates` exist after `pip install`. If the build succeeds but the container still crashes, see logs and [Getting started — Podman](getting-started.md#podman-without-docker-compose).
+
 ## Cannot reach the kiosk from a phone or tablet
 
 1. **Same network** — the device must be on the same Wi‑Fi or LAN as the host (not mobile data).

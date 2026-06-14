@@ -162,11 +162,16 @@ Ledger-cli treats this as a periodic transaction. When a parent changes a daily 
 
 ### Balance display
 
-Ledger reports asset accounts as negative. The kiosk shows positive amounts:
+**Wallet** uses the same budget query as the legacy Flask kiosk — remaining allowance, not the full asset account:
 
 ```text
-wallet_display  = -ledger_balance("Assets:Falafel")
-savings_display =  ledger_balance("Falafel:Savings")
+ledger -E -f journal.dat --budget bal --invert
+```
+
+The child name (e.g. `Falafel`) is looked up in that report. **Savings** uses the sub-account balance:
+
+```text
+savings_display = ledger_balance("Falafel:Savings")
 ```
 
 ### Write path

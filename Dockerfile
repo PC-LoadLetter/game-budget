@@ -9,7 +9,12 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY src ./src
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir . \
+    && python -c "from pathlib import Path; import game_budget; \
+static = Path(game_budget.__file__).parent / 'web/static'; \
+templates = Path(game_budget.__file__).parent / 'web/templates'; \
+assert static.is_dir(), f'missing {static}'; \
+assert templates.is_dir(), f'missing {templates}'"
 
 EXPOSE 8080
 
