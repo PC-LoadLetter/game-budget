@@ -24,7 +24,7 @@ class ChildConfig:
 class AppConfig:
     children: list[ChildConfig] = field(default_factory=list)
     admin_password_hash: str = ""
-    background_image: str = "/static/chiefjoe.jpg"
+    background_image: str = "/static/default-bg.svg"
     secret_key: str = ""
     allow_overdraft: bool = False
 
@@ -76,7 +76,7 @@ def load_config(data: Path) -> AppConfig:
     return AppConfig(
         children=children,
         admin_password_hash=raw.get("admin_password_hash", ""),
-        background_image=raw.get("background_image", "/static/chiefjoe.jpg"),
+        background_image=raw.get("background_image", "/static/default-bg.svg"),
         secret_key=raw.get("secret_key", ""),
         allow_overdraft=bool(raw.get("allow_overdraft", False)),
     )

@@ -41,7 +41,7 @@ flowchart LR
 
 Shared dashboard with no login. Layout matches the legacy Flask UI:
 
-- Two columns (Cleanrig left, Falafel right by default) showing **wallet** and **savings** balances.
+- Two columns (defaults to first two children in config) showing **wallet** and **savings** balances. The side-by-side layout requires **two children**; with one child, the form still works but balances may not display prominently (see [Getting started — limitations](getting-started.md#known-limitations-v1)).
 - Transaction form: date, seller, game description, buyer, cost.
 - CSRF token on POST; full page reload after a successful submit.
 
@@ -62,7 +62,7 @@ Password-protected (bcrypt hash in `config.yaml`). Default password on first run
 |---------|-------------|
 | Daily budgets | Updates `config.yaml` and rewrites the `~ Daily` block in `journal.dat` |
 | Savings cron | Dollars per day swept into `{Child}:Savings` (0 = disabled) |
-| Background image | URL path served from `/static` (default: `/static/chiefjoe.jpg`) |
+| Background image | URL path served from `/static` (default: `/static/default-bg.svg`) |
 | Allow overdraft | Skip balance checks on kiosk purchases |
 | Export | Download `journal.dat` |
 | Import | Replace journal from any uploaded file (backs up current file to `journal.dat.bak`) |
@@ -93,7 +93,7 @@ children:
     daily_budget: 5.0
     savings_cron: 1.0
 admin_password_hash: "..."
-background_image: /static/chiefjoe.jpg
+background_image: /static/default-bg.svg
 secret_key: "..."
 allow_overdraft: false
 ```
@@ -220,7 +220,7 @@ cp /path/to/your/journal.dat data/journal.dat   # optional; or import via /admin
 docker compose up --build
 ```
 
-Open `http://<host>:8080` from any device on the LAN. The `./data` volume persists across container restarts.
+Open `http://<host>:8080` from any device on the LAN. The `./data` volume persists across container restarts. See [Getting started](getting-started.md) for a full walkthrough.
 
 ### Bare metal
 
@@ -232,7 +232,7 @@ uv run game-budget init --data ./data
 uv run game-budget serve --data ./data --host 0.0.0.0
 ```
 
-An example systemd unit is in `deploy/game-budget.service`.
+An example systemd unit is in `deploy/game-budget.service`. See [Operations — bare metal](operations.md#bare-metal).
 
 ### Development
 
@@ -249,7 +249,7 @@ Proportionate for a home LAN app:
 - Kiosk `/` — no authentication; CSRF on POST only.
 - `/admin` — bcrypt password, `HttpOnly` session cookie, `SameSite=Lax`.
 - Journal writes — exclusive file lock to avoid concurrent corruption.
-- HTTPS — not required for v1; can be added via a reverse proxy (Caddy, nginx).
+- HTTPS — not required for v1; see [Operations — HTTPS](operations.md#https-optional).
 
 Restrict filesystem permissions on the data directory to the service user.
 
