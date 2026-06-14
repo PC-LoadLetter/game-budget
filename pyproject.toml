@@ -28,6 +28,10 @@ only-packages = true
 [tool.hatch.build.targets.wheel.sources]
 "src" = ""
 
+[tool.hatch.build.targets.wheel.force-include]
+"src/game_budget/web/static" = "game_budget/web/static"
+"src/game_budget/web/templates" = "game_budget/web/templates"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
